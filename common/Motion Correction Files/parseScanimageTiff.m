@@ -19,6 +19,12 @@ elseif isfield(siStruct, 'software') && siStruct.software.version < 4 %ie it's a
     fZ = 0;
     nSlices = 1;
     nChannels = siStruct.acq.numberOfChannelsSave;
+elseif isfield(siStruct, 'SI')
+    % SPESHUL SCANIMAGE 5...
+    display('special scanimage 5...')
+    fZ = siStruct.SI.hFastZ.active;
+    nSlices = 1; % just do thsi for now...
+    nChannels = 1;
 else
     error('Movie is from an unidentified scanimage version, or metadata is improperly formatted'),
 end

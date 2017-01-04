@@ -100,6 +100,7 @@ classdef Acquisition2P < handle
                 castType = 'uint16';
             end
             [movie, metaMovie] = tiffRead(obj.Movies{movNum},castType);
+%             [movie, metaMovie] = tiffRead(obj.Movies{movNum},castType,[],  obj); % 08/27/2016: add this to deal with imageJ
         end
         
         function movie = readCor(obj,movNum,castType,sliceNum,chanNum)

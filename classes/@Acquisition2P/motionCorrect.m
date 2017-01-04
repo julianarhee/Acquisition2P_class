@@ -121,8 +121,13 @@ obj.metaDataSI = scanImageMetadata;
 
 %Assign acquisition to a variable with its own name, and write to same
 %directory
-eval([obj.acqName ' = obj;']),
-save(fullfile(obj.defaultDir, obj.acqName), obj.acqName)
+aname = obj.acqName;
+% eval([obj.acqName ' = obj;'])
+% eval([aname ' = obj;'])
+assignin('base','aname',obj);
+% save(fullfile(obj.defaultDir, obj.acqName), obj.acqName)
+save(fullfile(obj.defaultDir, obj.acqName), 'aname')
+
 display('Motion Correction Completed!')
 
 end

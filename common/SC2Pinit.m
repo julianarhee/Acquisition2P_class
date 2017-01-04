@@ -18,6 +18,7 @@ movNames = sort(movNames);
 try
     acqNamePlace = find(movNames{1} == '_',1);
     obj.acqName = movNames{1}(1:acqNamePlace-1);
+%     obj.acqName = movNames{1}(acqNamePlace:end);
 catch
     obj.acqName = sprintf('%s_%.0f',date,now);
     warning('Automatic Name Generation Failed, using date_time')
@@ -35,7 +36,9 @@ obj.binFactor = 1;
 obj.motionCorrectionFunction = @withinFile_withinFrame_lucasKanade;
 
 %Assign acquisition object to acquisition name variable in workspace
-assignin('base',obj.acqName,obj);
+%assignin('base',obj.acqName,obj);
+aname = obj.acqName;
+assignin('base','aname',obj);
 
 %Notify user of success
 fprintf('Successfully added %03.0f movies to acquisition: %s\n',length(movNames),obj.acqName),

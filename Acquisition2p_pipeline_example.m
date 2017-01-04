@@ -68,7 +68,9 @@
 % initialization automatically assign the variable ensures that the
 % object's internal name matches its matlab variable name. 
 
-Acquisition2P([],@SC2Pinit);
+myObj = Acquisition2P([],@SC2Pinit);
+myObj.motionRefChannel = 1;
+myObj.motionRefMovNum = 1;
 
 % The Acquisition2P constructer has a series of error checks to ensure that
 % necessary properties are not left blank by accident. Practically, this
