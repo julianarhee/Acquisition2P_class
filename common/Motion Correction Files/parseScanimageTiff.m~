@@ -35,18 +35,13 @@ end
 
 % Copy data into structure:
 if nSlices>1
-    if strcmp(siStruct.VERSION_MAJOR, '2016') % need this if clause for 2016
-        discard = (fZ*siStruct.hFastZ.discardFlybackFrames);
-    else
-        discard = (fZ*siStruct.fastZDiscardFlybackFrames);
-    end
-    for sl = 1:nSlices-discard % Slices, removing flyback.
+    for sl = 1:nSlices-(fZ*siStruct.fastZDiscardFlybackFrames) % Slices, removing flyback.
         for ch = 1:nChannels % Channels
             frameInd = ch + (sl-1)*nChannels;
             movStruct.slice(sl).channel(ch).mov = mov(:, :, frameInd:(nSlices*nChannels):end);
         end
     end
-    nSlices = nSlices - discard; %nSlices-(fZ*siStruct.fastZDiscardFlybackFrames);
+    nSlices = nSlices-(fZ*siStruct.fastZDiscardFlybackFrames);
 else
     for sl = 1;
         for ch = 1:nChannels % Channels
