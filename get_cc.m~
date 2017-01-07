@@ -49,9 +49,7 @@ end
 
 slice_path = '/nas/volume1/2photon/RESDATA/20161222_JR030W_gratings1/fov1_gratings_10reps_run1_slice6_00009/'
 avgimg_fn = 'AVG_fov1_gratings_10reps_run1_Slice06_Channel01_File009_scaled.tif';
-corrected_path = '/nas/volume1/2photon/RESDATA/20161222_JR030W_gratings1/Corrected/';
-tseries_fn = 'fov1_gratings_10reps_run1_Slice06_Channel01_File009.tif';
-
+tseries_fn = 
 % get average:
 avgimg = imread(strcat(slice_path, avgimg_fn));
 avgimg = mat2gray(avgimg);
@@ -62,7 +60,7 @@ masks=ROIselect_circle(avgimg);
 
 % load movie:
 sframe=1;
-Y = bigread2(strcat(corrected_path, tseries_fn),sframe);
+Y = bigread2(strcat(slice_path, tseries_fn),sframe);
 if ~isa(Y,'double');    Y = double(Y);  end
 
 % extract raw traces:
