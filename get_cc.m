@@ -17,9 +17,10 @@ curr_slice_path = strcat(curr_slice_source, curr_slice_name);
 
 %% Get CC images for each slice and run:
 
-tiff_path = '/nas/volume1/2photon/RESDATA/20161222_JR030W_gratings1/Corrected/';
+% tiff_path = '/nas/volume1/2photon/RESDATA/20161222_JR030W_gratings1/Corrected/';
+tiff_path = '/nas/volume1/2photon/RESDATA/20161222_JR030W_rsvp1/Corrected/';
 
-traces_path = '/nas/volume1/2photon/RESDATA/20161222_JR030W_gratings1/Traces/';
+traces_path = '/nas/volume1/2photon/RESDATA/20161222_JR030W_rsvp1/CC/';
 tiffs = dir(strcat(tiff_path, '*Channel01*'));
 
 sframe=1;
