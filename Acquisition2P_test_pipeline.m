@@ -81,7 +81,7 @@ cd(curr_dir)
 myObj = Acquisition2P([],@SC2Pinit);
 
 myObj.motionRefChannel = 2;
-myObj.motionRefMovNum = 5;
+myObj.motionRefMovNum = 1;
 
 myObj.motionCorrect;
 
