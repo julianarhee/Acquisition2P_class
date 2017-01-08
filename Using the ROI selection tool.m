@@ -189,7 +189,7 @@ myObj.save,
 %       reasonable segmentation of the region into two previously selected
 %       ROIs (yellow + orange clusters), an unidentified process (light blue),
 %       a large region of 'neuropil' (dark blue), and my targeted cell
-%       (green).
+%       (green).tim
 %  'ex Raw Trace Overlay' - I've plotted the raw cell body trace from the last
 %       figure in orange on top of the neuropil trace, using the 't'
 %       keypress, and zoomed in to a particularly problematic region of the

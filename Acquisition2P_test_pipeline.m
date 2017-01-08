@@ -158,11 +158,11 @@ implay(cat(2,mov,rawMov)/1e3,30),
 % the GCaMP signal for some slice, so be sure the following variables match
 % your settings (all arguments here are optional, but provided for clarity).
 
-sliceNum = 1; %Choose a slice to analyze
+sliceNum = 9; %1; %Choose a slice to analyze
 channelNum = 1; %Choose the GCaMP channel
 movNums = []; %this will default to all movie files
 radiusPxCov = 11; %default, may need zoom level adjustment
-temporalBin = 8; %default (tested w/ 15-30hz imaging), may need adjustment based on frame rate
+temporalBin = 3; %8; %default (tested w/ 15-30hz imaging), may need adjustment based on frame rate
 writeDir = []; %empty defaults to the directory the object is saved in (the 'defaultDir')
 
 % Now call the function:

@@ -49,7 +49,9 @@ end
 
 slice_path = '/nas/volume1/2photon/RESDATA/20161222_JR030W_gratings1/fov1_gratings_10reps_run1_slice6_00009/'
 avgimg_fn = 'AVG_fov1_gratings_10reps_run1_Slice06_Channel01_File009_scaled.tif';
-tseries_fn = 
+corrected_path = '/nas/volume1/2photon/RESDATA/20161222_JR030W_gratings1/Corrected/';
+tseries_fn = 'fov1_gratings_10reps_run1_Slice06_Channel01_File009_scaled.tif';
+
 % get average:
 avgimg = imread(strcat(slice_path, avgimg_fn));
 avgimg = mat2gray(avgimg);
@@ -62,6 +64,7 @@ masks=ROIselect_circle(avgimg);
 sframe=1;
 Y = bigread2(strcat(slice_path, tseries_fn),sframe);
 if ~isa(Y,'double');    Y = double(Y);  end
+nframes = size(Y,3);
 
 % extract raw traces:
 raw_traces = zeros(size(masks,3), size(Y,3));
@@ -88,7 +91,7 @@ for rtrace=1:size(raw_traces,1)
     
     curr_trace = raw_traces(rtrace,:);
     s1 = smooth(curr_trace, winsize, 'rlowess');
-    t1 = curr_trace' - t1;
+    t1 = curr_trace' - s1;
     
 %     figure()
 %     subplot(1,2,1)
@@ -104,17 +107,56 @@ for rtrace=1:size(raw_traces,1)
     traces(rtrace,:) = deltaF;
 end
 
-
+active_cells = [];
 figure()
 for rtrace=1:size(traces,1)
+    if (max(traces(rtrace,:)) > 0.04)
+        active_cells = [active_cells rtrace];
+    end
     plot(traces(rtrace,:), 'color', rand(1,3))
     hold on;
 end
 
+% Plot active traces:
+
+% GET ard_file_duration for current file: _0000x.tif
+file_no = 9;
+y_sec = [0:nframes-1].*(ard_file_durs(file_no)/nframes); % y_sec = [0:nframes-1]./acquisition_rate;
+
+% GET MW rel times from match_triggers.py: 'rel_times'
+mw_rel_times = rel_times/1000000; % convert to sec
+
+figure();
+for cell=1:length(active_cells)
+   subplot(length(active_cells), 1, cell)
+
+  % plot trace:
+   plot(y_sec, traces(active_cells(cell), :).*100, 'b', 'LineWidth', 2)
+   %y1=get(gca,'ylim');
+   hold on;
+   
+   %plot(mw_rel_times, zeros(size(mw_rel_times)), 'r*'); 
+   for stim=1:2:length(mw_rel_times)-1
+       sx = [mw_rel_times(stim) mw_rel_times(stim+1) mw_rel_times(stim+1) mw_rel_times(stim)];
+       %sy = [y1(1) y1(1) y1(2) y1(2)];
+       sy = [-0.1 -0.1 0.1 0.1];
+       patch(sx, sy, 'k', 'FaceAlpha', 0.2, 'EdgeAlpha', 0)
+       hold on;
+   end
+   
+   % plot trace:
+   plot(y_sec, traces(active_cells(cell), :), 'b', 'LineWidth', 2)
+   
+   title(['ROI #: ' num2str(active_cells(cell))]);
+   hold on;
+end
+xlabel('time (s)')
+ylabel('delta F / F')
+
+
 % Plot ROIs and show active cells:
 nparts = strsplit(tseries_fn, '_');
 figname = strcat(nparts(1), nparts(2), nparts(3), nparts(4), nparts(5), nparts(7));
-active_cells = [9,28];
 
 RGBimg = zeros([size(avgimg),3]);
 RGBimg(:,:,1)=0;
