@@ -6,13 +6,13 @@ function SC2Pinit(obj)
 
 %Initialize user selection of multiple tif files
 [movNames, movPath] = uigetfile('*.tif','MultiSelect','on');
-%movNames = {movNames}; % jyr for one file
+movNames = {movNames}; % jyr for one file
 
 %Set default directory to folder location,
 obj.defaultDir = movPath;
 
 %sort movie order alphabetically for consistent results
-movNames = sort(movNames);
+%movNames = sort(movNames);
 
 %Attempt to automatically name acquisition from movie filename, raise
 %warning and create generic name otherwise
