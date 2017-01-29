@@ -1,12 +1,17 @@
-function SC2Pinit(obj)
+function SC2Pinit_noUI(obj, movPath)
 %Example of an Acq2P Initialization Function. Allows user selection of
 %movies to form acquisition, sorts alphabetically, assigns an acquisition
 %name and default directory, and assigns the object to a workspace variable
 %named after the acquisition name
 
 %Initialize user selection of multiple tif files
-[movNames, movPath] = uigetfile('*.tif','MultiSelect','on');
-movNames = {movNames}; % jyr for one file
+%[movNames, movPath] = uigetfile('*.tif','MultiSelect','on');
+movList = dir(fullfile(movPath, '*.tif'));
+movNames = {};
+for m=1:length(movList)
+    movNames{m} = movList(m).name;
+end
+%movNames = {movNames}; % jyr for one file
 
 %Set default directory to folder location,
 obj.defaultDir = movPath;
@@ -19,7 +24,7 @@ obj.defaultDir = movPath;
 try
     %acqNamePlace = find(movNames{1} == '_',1); %jyr get full run name
     %instead
-    acqNamePlaces = find(movNames{1} == '_');
+    acqNamePlaces = find(movNames{1} == '.');
     acqNamePlace = acqNamePlaces(end);
     obj.acqName = movNames{1}(1:acqNamePlace-1);
 catch
