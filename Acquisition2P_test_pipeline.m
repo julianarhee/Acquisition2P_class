@@ -91,8 +91,9 @@ acquisition_dirs = dir(source_dir);
 isub = [acquisition_dirs(:).isdir]; %# returns logical vector
 acquisitions = {acquisition_dirs(isub).name}';
 acquisitions(ismember(acquisitions,{'.','..'})) = [];
+mc_ref_channel = 2;
 
-for acquisition_idx=2:2 %length(acquisitions)
+for acquisition_idx=3:length(acquisitions)
     
     % ---------------------------------------------------------------------
     % 1. Move each "acquisition" to be processed for M.C. into its own
@@ -111,6 +112,7 @@ for acquisition_idx=2:2 %length(acquisitions)
         end
     end
     
+    fprintf('Processing acquisition %s...\n', curr_acquisition_name);
     % ---------------------------------------------------------------------
     % Walk through each acquisition-directory and run motion correction:
     tiff_dirs = dir(curr_acquisition_dir);
@@ -132,8 +134,13 @@ for acquisition_idx=2:2 %length(acquisitions)
     for tiff_idx = 1:length(tiffs)
         corrected_path = fullfile(curr_acquisition_dir, tiffs{tiff_idx}, 'Corrected');
         corrected_tiff_fns = dir(fullfile(corrected_path, '*.tif'));
+        corrected_tiff_fns = {corrected_tiff_fns(:).name};
         corrected_ch1_path = fullfile(corrected_path, 'Channel01');
         corrected_ch2_path = fullfile(corrected_path, 'Channel02');
+        if ~exist(corrected_ch1_path, 'dir')
+            mkdir(corrected_ch1_path);
+            mkdir(corrected_ch2_path);
+        end
         for tiff_idx=1:length(corrected_tiff_fns)
             if strfind(corrected_tiff_fns{tiff_idx}, 'Channel01')
                 movefile(fullfile(corrected_path, corrected_tiff_fns{tiff_idx}), fullfile(corrected_ch1_path, corrected_tiff_fns{tiff_idx}));
