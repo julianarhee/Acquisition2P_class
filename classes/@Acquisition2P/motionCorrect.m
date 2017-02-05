@@ -75,6 +75,10 @@ for movNum = movieOrder
     if obj.binFactor > 1
         mov = binSpatial(mov, obj.binFactor);
     end
+    if min(mov(:))<0
+	fprintf('Reading int16, converting to uint16...\n');
+	mov = mov + (2^15);
+    end
     
     % Apply line shift:
     fprintf('Line Shift Correcting Movie #%03.0f of #%03.0f\n', movNum, nMovies),

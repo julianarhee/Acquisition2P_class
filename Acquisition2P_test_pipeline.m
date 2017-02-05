@@ -86,14 +86,14 @@ myObj.motionCorrect;
 
 %% Run MC for multiple acquisitiosn without UI:
 
-source_dir = '/nas/volume1/2photon/RESDATA/20161218_CE024_highres/acquisitions/';
+source_dir = '/nas/volume1/2photon/RESDATA/20161221_JR030W/retinotopy037Hz/raw/';
 acquisition_dirs = dir(source_dir);
 isub = [acquisition_dirs(:).isdir]; %# returns logical vector
 acquisitions = {acquisition_dirs(isub).name}';
 acquisitions(ismember(acquisitions,{'.','..'})) = [];
 mc_ref_channel = 2;
 
-for acquisition_idx=3:length(acquisitions)
+for acquisition_idx=14:14 %3:length(acquisitions)
     
     % ---------------------------------------------------------------------
     % 1. Move each "acquisition" to be processed for M.C. into its own
@@ -103,6 +103,7 @@ for acquisition_idx=3:length(acquisitions)
     
     curr_tiffs = dir(fullfile(curr_acquisition_dir, '*.tif'));
     curr_tiffs = {curr_tiffs(:).name};
+    if run_multi_acquisitions == 1
     for tiff_idx = 1:length(curr_tiffs)
         curr_tiff_fn = curr_tiffs{tiff_idx};
         [pathstr,name,ext] = fileparts(curr_tiff_fn);
@@ -110,6 +111,7 @@ for acquisition_idx=3:length(acquisitions)
             mkdir(fullfile(curr_acquisition_dir, name));
             movefile(fullfile(curr_acquisition_dir, curr_tiff_fn), fullfile(curr_acquisition_dir, name, curr_tiff_fn));
         end
+    end
     end
     
     fprintf('Processing acquisition %s...\n', curr_acquisition_name);

@@ -99,8 +99,13 @@ classdef Acquisition2P < handle
             if ~exist('castType', 'var') || isempty(castType)
                 castType = 'uint16';
             end
-            [movie, metaMovie] = tiffRead(obj.Movies{movNum},castType);
-        end
+            fprintf('CastType is %s\n', castType); 
+	    [movie, metaMovie] = tiffRead(obj.Movies{movNum},castType);
+	    if min(movie(:))<0
+		fprintf('Movie not uint16, shifting to uint.\n');
+		movie = movie + (2^15);
+	    end        
+	end
         
         function movie = readCor(obj,movNum,castType,sliceNum,chanNum)
             %Reads in motion corrected data from an acquisition. Defaults
