@@ -117,10 +117,12 @@ for movNum = movieOrder
             end
         end
     end
+    
+    obj.metaDataSI.mov(movNum) = scanImageMetadata;
 end
 
 % Store SI metadata in acq object
-obj.metaDataSI = scanImageMetadata;
+%obj.metaDataSI = scanImageMetadata;
 
 %Assign acquisition to a variable with its own name, and write to same
 %directory
