@@ -71,13 +71,10 @@ movieOrder([1 obj.motionRefMovNum]) = [obj.motionRefMovNum 1];
 %split files (slice and channel)
 for movNum = movieOrder
     fprintf('\nLoading Movie #%03.0f of #%03.0f\n',movNum,nMovies),
-    [mov, scanImageMetadata] = obj.readRaw(movNum,'single');
+    %[mov, scanImageMetadata] = obj.readRaw(movNum,'single');
+    [mov, scanImageMetadata] = obj.readRaw(movNum,'double');
     if obj.binFactor > 1
         mov = binSpatial(mov, obj.binFactor);
-    end
-    if min(mov(:))<0
-	fprintf('Reading int16, converting to uint16...\n');
-	mov = mov + (2^15);
     end
     
     % Apply line shift:
@@ -110,11 +107,13 @@ for movNum = movieOrder
             fprintf('Writing Movie #%03.0f of #%03.0f\n',movNum,nMovies),
             try
                 tiffWrite(movStruct.slice(nSlice).channel(nChannel).mov, movFileName, writeDir, 'int16');
+                %tiffWrite(movStruct.slice(nSlice).channel(nChannel).mov, movFileName, writeDir, 'uint16');
             catch
                 % Sometimes, disk access fails due to intermittent
                 % network problem. In that case, wait and re-try once:
                 pause(60);
                 tiffWrite(movStruct.slice(nSlice).channel(nChannel).mov, movFileName, writeDir, 'int16');
+                %tiffWrite(movStruct.slice(nSlice).channel(nChannel).mov, movFileName, writeDir, 'uint16');
             end
         end
     end
