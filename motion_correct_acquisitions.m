@@ -86,7 +86,7 @@
 
 %% Run MC for multiple acquisitiosn without UI:
 run_multi_acquisitions=0
-source_dir = '/nas/volume1/2photon/RESDATA/20161221_JR030W/retinotopy037Hz/raw/';
+source_dir = '/nas/volume1/2photon/RESDATA/20161221_JR030W/retinotopy037Hz/test_resize/';
 %if run_multi_acquisitions == 1
 acquisition_dirs = dir(source_dir);
 isub = [acquisition_dirs(:).isdir]; %# returns logical vector

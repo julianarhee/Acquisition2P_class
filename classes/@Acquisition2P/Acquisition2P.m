@@ -102,6 +102,17 @@ classdef Acquisition2P < handle
             fprintf('CastType is %s\n', castType); 
             [movie, metaMovie] = tiffRead(obj.Movies{movNum},castType);        
         end
+        function [movie, metaMovie] = readRaw2(obj,movNum,castType)
+            %Reads in raw data from an acquisition
+            %
+            % [movie, metaMovie] = readRaw(obj,movNum,castType)
+            if ~exist('castType', 'var') || isempty(castType)
+                castType = 'uint16';
+            end
+            fprintf('CastType is %s\n', castType); 
+            [movie, metaMovie] = tiffRead2(obj.Movies{movNum},castType);       
+	    %fprintf('New size is: %s.\n', str(size(movie))); 
+        end
         
         function movie = readCor(obj,movNum,castType,sliceNum,chanNum)
             %Reads in motion corrected data from an acquisition. Defaults

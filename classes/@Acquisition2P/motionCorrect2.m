@@ -1,4 +1,4 @@
-function motionCorrect(obj,writeDir,motionCorrectionFunction,namingFunction)
+function motionCorrect2(obj,writeDir,motionCorrectionFunction,namingFunction)
 %Wrapper function managing motion correction of an acquisition object
 %
 %motionCorrect(obj,writeDir,motionCorrectionFunction,namingFunction)
@@ -71,10 +71,8 @@ movieOrder([1 obj.motionRefMovNum]) = [obj.motionRefMovNum 1];
 %split files (slice and channel)
 for movNum = movieOrder
     fprintf('\nLoading Movie #%03.0f of #%03.0f\n',movNum,nMovies),
-    [mov, scanImageMetadata] = obj.readRaw(movNum,'single');
-    %[mov, scanImageMetadata] = obj.readRaw(movNum,'double');
-    fprintf('Mov size is: %s\n.', mat2str(size(mov)));
-    fprintf('Mov type is: %s\n.', class(mov)); 
+    %[mov, scanImageMetadata] = obj.readRaw(movNum,'single');
+    [mov, scanImageMetadata] = obj.readRaw2(movNum,'double');
     if obj.binFactor > 1
         mov = binSpatial(mov, obj.binFactor);
     end
