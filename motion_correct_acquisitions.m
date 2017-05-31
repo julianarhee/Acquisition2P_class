@@ -85,8 +85,18 @@
 % you can bypass these error checks using a different constructer syntax)
 
 %% Run MC for multiple acquisitiosn without UI:
-run_multi_acquisitions=0
+clear all;
+clc;
+addpath(genpath('~/Repositories/Acquisition2P_class'))
+
+
+run_multi_acquisitions=0;
+
+crossref = true;
+
 %acquisition_dir = '/nas/volume1/2photon/RESDATA/20161222_JR030W/gratings1';
+acquisition_dir = '/nas/volume1/2photon/RESDATA/20161221_JR030W/test_crossref';
+
 %if run_multi_acquisitions == 1
 % acquisition_dirs = dir(acquisition_dir);
 % isub = [acquisition_dirs(:).isdir]; %# returns logical vector
@@ -97,7 +107,7 @@ run_multi_acquisitions=0
 %end
 
 %tiffs(ismember(tiffs,{'.','..'})) = [];
-mc_ref_channel = 2;
+mc_ref_channel = 3;
 %fprintf('Correcting %i movies: \n', length(tiffs));
 %display(tiffs);
 
@@ -131,38 +141,47 @@ fprintf('Processing acquisition %s...\n', acquisition_dir);
 %     
 %     for tiff_idx = 1:length(tiffs)
 %     curr_mov = fullfile(curr_acquisition_dir, tiffs{tiff_idx});
-myObj = Acquisition2P([],{@SC2Pinit_noUI,[],acquisition_dir});
-myObj.motionRefChannel = 2;
-myObj.motionRefMovNum = 1;
-myObj.motionCorrect;
-%end
-    
 
+if crossref
+    myObj = Acquisition2P([],{@SC2Pinit_noUI_crossref,[],acquisition_dir,crossref});
+    myObj.motionRefChannel = 2;
+    myObj.motionRefMovNum = 3;
+    myObj.motionCorrectCrossref;
+    %end
+    myObj.save;
+else
+    myObj = Acquisition2P([],{@SC2Pinit_noUI,[],acquisition_dir});
+    myObj.motionRefChannel = 2;
+    myObj.motionRefMovNum = 1;
+    myObj.motionCorrect;
+    %end
+    myObj.save;
+end
     
 % ---------------------------------------------------------------------
 % If using (and including) 2 channels for MC, separate them into their
 % own dirs:
-if mc_ref_channel == 2
-%     for tiff_idx = 1:length(tiffs)
-    corrected_path = fullfile(acquisition_dir, 'Corrected');
-    corrected_tiff_fns = dir(fullfile(corrected_path, '*.tif'));
-    corrected_tiff_fns = {corrected_tiff_fns(:).name};
-    corrected_ch1_path = fullfile(corrected_path, 'Channel01');
-    corrected_ch2_path = fullfile(corrected_path, 'Channel02');
-    if ~exist(corrected_ch1_path, 'dir')
-        mkdir(corrected_ch1_path);
-        mkdir(corrected_ch2_path);
-    end
-    for tiff_idx=1:length(corrected_tiff_fns)
-        if strfind(corrected_tiff_fns{tiff_idx}, 'Channel01')
-            movefile(fullfile(corrected_path, corrected_tiff_fns{tiff_idx}), fullfile(corrected_ch1_path, corrected_tiff_fns{tiff_idx}));
-        else
-            movefile(fullfile(corrected_path, corrected_tiff_fns{tiff_idx}), fullfile(corrected_ch2_path, corrected_tiff_fns{tiff_idx}));
-        end
-    end
+% if mc_ref_channel == 2
+% %     for tiff_idx = 1:length(tiffs)
+%     corrected_path = fullfile(acquisition_dir, 'Corrected');
+%     corrected_tiff_fns = dir(fullfile(corrected_path, '*.tif'));
+%     corrected_tiff_fns = {corrected_tiff_fns(:).name};
+%     corrected_ch1_path = fullfile(corrected_path, 'Channel01');
+%     corrected_ch2_path = fullfile(corrected_path, 'Channel02');
+%     if ~exist(corrected_ch1_path, 'dir')
+%         mkdir(corrected_ch1_path);
+%         mkdir(corrected_ch2_path);
 %     end
-end
-
+%     for tiff_idx=1:length(corrected_tiff_fns)
+%         if strfind(corrected_tiff_fns{tiff_idx}, 'Channel01')
+%             movefile(fullfile(corrected_path, corrected_tiff_fns{tiff_idx}), fullfile(corrected_ch1_path, corrected_tiff_fns{tiff_idx}));
+%         else
+%             movefile(fullfile(corrected_path, corrected_tiff_fns{tiff_idx}), fullfile(corrected_ch2_path, corrected_tiff_fns{tiff_idx}));
+%         end
+%     end
+% %     end
+% end
+% 
 
 
 

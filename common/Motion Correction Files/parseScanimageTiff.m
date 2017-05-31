@@ -22,7 +22,7 @@ elseif isfield(siStruct,'SI') % JYR 01/04/2017 -- SI 2016
     % ScanImage.
     fZ              = siStruct.hFastZ.enable; %siStruct.fastZEnable;
     nChannels       = numel(siStruct.hChannels.channelSave); %numel(siStruct.channelsSave);
-    nSlices         = siStruct.hStackManager.numSlices + (fZ*siStruct.hFastZ.discardFlybackFrames); % Slices are acquired at different locations (e.g. depths).
+    nSlices         = siStruct.hStackManager.numSlices + (fZ*siStruct.hFastZ.numDiscardFlybackFrames); % Slices are acquired at different locations (e.g. depths).
     
 elseif isfield(siStruct, 'software') && siStruct.software.version < 4 %ie it's a scanimage 3 file
     fZ = 0;
@@ -36,7 +36,7 @@ end
 % Copy data into structure:
 if nSlices>1
     if strcmp(siStruct.VERSION_MAJOR, '2016') % need this if clause for 2016
-        discard = (fZ*siStruct.hFastZ.discardFlybackFrames);
+        discard = (fZ*siStruct.hFastZ.numDiscardFlybackFrames);
     else
         discard = (fZ*siStruct.fastZDiscardFlybackFrames);
     end

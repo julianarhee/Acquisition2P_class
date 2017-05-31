@@ -24,6 +24,7 @@ classdef Acquisition2P < handle
         correctedMovies     %Structure formatted by slice and channel, each containing a cell array of filenames
         indexedMovie        %Structure formatted by slice and channel, each containing filename for mat file
         roiInfo             %Slice structure containing rois and related calculations
+        acqSubNames
     end
     
     methods
