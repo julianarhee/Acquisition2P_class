@@ -7,7 +7,7 @@ function SC2Pinit_noUI(obj, movPath)
 %Initialize user selection of multiple tif files
 %[movNames, movPath] = uigetfile('*.tif','MultiSelect','on');
 movList = dir(fullfile(movPath, '*.tif'));
-movNames = {movList(:).name}';
+movNames = {movList(:).name}'
 
 %movNames = {};
 %for m=1:length(movList)
@@ -26,7 +26,11 @@ obj.defaultDir = movPath;
 try
     %acqNamePlace = find(movNames{1} == '_',1); %jyr get full run name
     %instead
-    acqNamePlaces = find(movNames{1} == '_');
+    if strfind(movNames{1}, '_')
+        acqNamePlaces = find(movNames{1} == '_');
+    else
+        acqNamePlaces = find(movNames{1} == '.');
+    end
     acqNamePlace = acqNamePlaces(end);
     obj.acqName = movNames{1}(1:acqNamePlace-1);
 catch

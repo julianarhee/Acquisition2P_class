@@ -92,10 +92,13 @@ addpath(genpath('~/Repositories/Acquisition2P_class'))
 
 run_multi_acquisitions=0;
 
-crossref = true;
+crossref = false %true;
+processed = true
+
 
 %acquisition_dir = '/nas/volume1/2photon/RESDATA/20161222_JR030W/gratings1';
-acquisition_dir = '/nas/volume1/2photon/RESDATA/20161221_JR030W/test_crossref';
+%acquisition_dir = '/nas/volume1/2photon/RESDATA/20161221_JR030W/test_crossref';
+acquisition_dir = '/nas/volume1/2photon/RESDATA/20161222_JR030W/retinotopy1/DATA';
 
 %if run_multi_acquisitions == 1
 % acquisition_dirs = dir(acquisition_dir);
@@ -107,7 +110,7 @@ acquisition_dir = '/nas/volume1/2photon/RESDATA/20161221_JR030W/test_crossref';
 %end
 
 %tiffs(ismember(tiffs,{'.','..'})) = [];
-mc_ref_channel = 3;
+mc_ref_channel = 2;
 %fprintf('Correcting %i movies: \n', length(tiffs));
 %display(tiffs);
 
@@ -147,6 +150,13 @@ if crossref
     myObj.motionRefChannel = 2;
     myObj.motionRefMovNum = 3;
     myObj.motionCorrectCrossref;
+    %end
+    myObj.save;
+elseif processed
+    myObj = Acquisition2P([],{@SC2Pinit_noUI,[],acquisition_dir});
+    myObj.motionRefChannel = 2;
+    myObj.motionRefMovNum = 1;
+    myObj.motionCorrectProcessed;
     %end
     myObj.save;
 else
