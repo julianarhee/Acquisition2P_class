@@ -207,6 +207,18 @@ eval([obj.acqName ' = obj;']),
 save(fullfile(obj.defaultDir, obj.acqName), obj.acqName)
 display('Motion Correction Completed!')
 
+
+if ~exist(fullfile(obj.defaultDir, 'raw'), 'dir')
+    mkdir(fullfile(obj.defaultDir, 'raw'));
+end
+
+for movidx=1:length(obj.Movies)
+    [datadir, fname, ext] = fileparts(obj.Movies{movidx});
+    movefile(obj.Movies{movidx}, fullfile(obj.defaultDir, 'raw', strcat(fname, ext)));
+end
+
+movefile(fullfile(obj.defaultDir, strcat(obj.acqName, '.mat')), fullfile(obj.defaultDir, 'Corrected', strcat(obj.acqName, '.mat')));
+
 end
 
 function movFileName = defaultNamingFunction(acqName, nSlice, nChannel, movNum)
