@@ -221,9 +221,9 @@ end
 
 movefile(fullfile(obj.defaultDir, strcat(obj.acqName, '.mat')), fullfile(obj.defaultDir, 'Corrected', strcat(obj.acqName, '.mat')));
 
-info = load(fullfile(obj.defaultDir, 'Corrected', strcat(obj.acqName, '.mat')))
+%info = load(fullfile(obj.defaultDir, 'Corrected', strcat(obj.acqName, '.mat')))
 
-interleaveTiffs(obj, info);
+interleaveTiffs(obj); %, info);
 
 end
 
