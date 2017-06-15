@@ -76,7 +76,9 @@ for movNum = movieOrder
     
     
     % meta source info comes from original tiffs:
-    [parentDir, dataFolder, ~] = fileparts(obj.defaultDir);
+    %[parentDir, dataFolder, ~] = fileparts(obj.defaultDir);
+    pts = strsplit(obj.defaultDir, '/DATA');
+    parentDir = pts{1};
     origMovies = dir(fullfile(parentDir,'*.tif'));
     origMovies = {origMovies(:).name};
     [~, scanImageMetadata] = tiffReadMeta(fullfile(parentDir, origMovies{movNum}));
