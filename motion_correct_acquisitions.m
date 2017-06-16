@@ -98,7 +98,7 @@ processed = true
 
 %acquisition_dir = '/nas/volume1/2photon/RESDATA/20161222_JR030W/gratings1';
 %acquisition_dir = '/nas/volume1/2photon/RESDATA/20161221_JR030W/test_crossref';
-acquisition_dir = '/nas/volume1/2photon/RESDATA/20161222_JR030W/retinotopy1/DATA';
+acquisition_dir = '/nas/volume1/2photon/RESDATA/20161222_JR030W/retinotopy2/DATA';
 
 %if run_multi_acquisitions == 1
 % acquisition_dirs = dir(acquisition_dir);
