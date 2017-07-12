@@ -91,8 +91,8 @@ switch opMode
                 moving(1:margin, :) = moving((1:margin)+margin, :);
                 moving(h-(1:margin)+1, :) = moving(h-(1:margin)+1-margin, :);
                 moving(:,1:margin) = moving(:,(1:margin)+margin); % Re-do first to cover the last corner.
-                D_nonrigid_global = imregdemons(moving, fixed, 'AccumulatedFieldSmoothing', 5, ...
-                    'DisplayWaitbar', false);
+                D_nonrigid_global = imregdemons(moving, fixed, 'AccumulatedFieldSmoothing', 5) %, ...
+                    %'DisplayWaitbar', false);
             end
             
             % Convert affine transformation matrix into displacement
