@@ -9,6 +9,15 @@ function SC2Pinit_noUI(obj, movPath)
 movList = dir(fullfile(movPath, '*.tif'));
 movNames = {movList(:).name}'
 
+checkstring = movNames{1};
+if ~isempty(checkstring(1)) && all(ismember(checkstring(1), '0123456789'))
+    for mov=1:length(movNames)
+        movefile(fullfile(movPath, movNames{mov}), fullfile(movPath, sprintf('file_%s', movNames{mov})));
+    end
+    movList = dir(fullfile(movPath, '*.tif'));
+    movNames = {movList(:).name}'
+end
+
 %movNames = {};
 %for m=1:length(movList)
 %    movNames{m} = movList(m).name;

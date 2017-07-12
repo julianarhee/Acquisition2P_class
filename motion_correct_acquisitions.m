@@ -97,12 +97,13 @@ gcp;
 run_multi_acquisitions=0;
 
 crossref = false %true;
-processed = true
+processed = false % true
 
 
 %acquisition_dir = '/nas/volume1/2photon/RESDATA/20161222_JR030W/gratings1';
 %acquisition_dir = '/nas/volume1/2photon/RESDATA/20161221_JR030W/test_crossref';
-acquisition_dir = '/nas/volume1/2photon/RESDATA/20161222_JR030W/gratings2/DATA';
+%acquisition_dir = '/nas/volume1/2photon/RESDATA/20161222_JR030W/gratings2/DATA';
+acquisition_dir = '/nas/volume1/2photon/RESDATA/test_motion_correction';
 
 %if run_multi_acquisitions == 1
 % acquisition_dirs = dir(acquisition_dir);
@@ -114,7 +115,7 @@ acquisition_dir = '/nas/volume1/2photon/RESDATA/20161222_JR030W/gratings2/DATA';
 %end
 
 %tiffs(ismember(tiffs,{'.','..'})) = [];
-mc_ref_channel = 2;
+mc_ref_channel = 1; %2;
 %fprintf('Correcting %i movies: \n', length(tiffs));
 %display(tiffs);
 
@@ -151,21 +152,21 @@ fprintf('Processing acquisition %s...\n', acquisition_dir);
 
 if crossref
     myObj = Acquisition2P([],{@SC2Pinit_noUI_crossref,[],acquisition_dir,crossref});
-    myObj.motionRefChannel = 2;
+    myObj.motionRefChannel = mc_ref_channel; %2;
     myObj.motionRefMovNum = 3;
     myObj.motionCorrectCrossref;
     %end
     myObj.save;
 elseif processed
     myObj = Acquisition2P([],{@SC2Pinit_noUI,[],acquisition_dir});
-    myObj.motionRefChannel = 2;
+    myObj.motionRefChannel = mc_ref_channel; %2;
     myObj.motionRefMovNum = 1;
     myObj.motionCorrectProcessed;
     %end
     myObj.save;
 else
     myObj = Acquisition2P([],{@SC2Pinit_noUI,[],acquisition_dir});
-    myObj.motionRefChannel = 2;
+    myObj.motionRefChannel = mc_ref_channel; %2;
     myObj.motionRefMovNum = 1;
     myObj.motionCorrect;
     %end
