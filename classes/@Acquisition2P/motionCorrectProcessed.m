@@ -207,6 +207,10 @@ end
 %directory
 eval([obj.acqName ' = obj;']),
 save(fullfile(obj.defaultDir, obj.acqName), obj.acqName)
+% Rename Acq2P object because want to create SI meta struct for processed TIFFs:
+newObjName = sprintf('Acq_%s.mat', obj.acqName);
+movefile(fullfile(obj.defaultDir, [obj.acqName '.mat']), fullfile(obj.defaultDir, newObjName));
+fprintf('Renamed file to: %s\n', newObjName);
 display('Motion Correction Completed!')
 
 

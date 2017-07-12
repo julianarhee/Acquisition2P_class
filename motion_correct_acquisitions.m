@@ -88,7 +88,11 @@
 clear all;
 clc;
 addpath(genpath('~/Repositories/Acquisition2P_class'))
+addpath(genpath('~/Repositories/helperFunctions'))
+addpath(genpath('~/Repositories/12k2p-software'))
+addpath(genpath('~/Repositories/2p-tester-scripts'))
 
+gcp;
 
 run_multi_acquisitions=0;
 
@@ -98,7 +102,7 @@ processed = true
 
 %acquisition_dir = '/nas/volume1/2photon/RESDATA/20161222_JR030W/gratings1';
 %acquisition_dir = '/nas/volume1/2photon/RESDATA/20161221_JR030W/test_crossref';
-acquisition_dir = '/nas/volume1/2photon/RESDATA/20161222_JR030W/retinotopy2/DATA';
+acquisition_dir = '/nas/volume1/2photon/RESDATA/20161222_JR030W/gratings2/DATA';
 
 %if run_multi_acquisitions == 1
 % acquisition_dirs = dir(acquisition_dir);
