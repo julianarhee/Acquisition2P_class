@@ -1,4 +1,4 @@
-function motionCorrect(obj,writeDir,motionCorrectionFunction,namingFunction)
+function motionCorrect(obj,writeDir,movieOrder,motionCorrectionFunction,namingFunction)
 %Wrapper function managing motion correction of an acquisition object
 %
 %motionCorrect(obj,writeDir,motionCorrectionFunction,namingFunction)
@@ -19,7 +19,7 @@ if ~exist('motionCorrectionFunction', 'var')
     motionCorrectionFunction = [];
 end
 
-if nargin < 4 || isempty(namingFunction)
+if nargin < 5 || isempty(namingFunction)
     namingFunction = @defaultNamingFunction;
 end
 
@@ -64,8 +64,11 @@ nMovies = length(obj.Movies);
 if isempty(obj.motionRefMovNum)
     obj.motionRefMovNum = floor(nMovies/2);
 end
-movieOrder = 1:nMovies;
-movieOrder([1 obj.motionRefMovNum]) = [obj.motionRefMovNum 1];
+
+if ~exist('movieOrder','var') || isempty(movieOrder)
+    movieOrder = 1:nMovies;
+    movieOrder([1 obj.motionRefMovNum]) = [obj.motionRefMovNum 1];
+end
 
 %Load movies one at a time in order, apply correction, and save as
 %split files (slice and channel)
@@ -120,9 +123,17 @@ end
 obj.metaDataSI = scanImageMetadata;
 
 %Assign acquisition to a variable with its own name, and write to same
-%directory
-eval([obj.acqName ' = obj;']),
-save(fullfile(obj.defaultDir, obj.acqName), obj.acqName)
+%directory. Need to ensure that it is a valid variable name:
+if verLessThan('matlab', 'R2014a')
+    acqVarName = genvarname(obj.acqName);
+    eval([acqVarName ' = obj;'])
+else
+    acqVarName = matlab.lang.makeValidName(obj.acqName);
+    eval([acqVarName ' = obj;'])
+end
+
+save(fullfile(obj.defaultDir, acqVarName), acqVarName)
+
 display('Motion Correction Completed!')
 
 end
