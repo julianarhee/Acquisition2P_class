@@ -227,7 +227,7 @@ end
 
 %info = load(fullfile(obj.defaultDir, 'Corrected', strcat(obj.acqName, '.mat')))
 
-interleaveTiffs(obj); %, info);
+interleaveTiffs(obj, true); %, info);
 
 end
 
