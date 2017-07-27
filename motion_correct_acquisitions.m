@@ -104,7 +104,7 @@ processed = true; %false % true
 %acquisition_dir = '/nas/volume1/2photon/RESDATA/20161221_JR030W/test_crossref';
 %acquisition_dir = '/nas/volume1/2photon/RESDATA/20161222_JR030W/gratings2/DATA';
 %acquisition_dir = '/nas/volume1/2photon/RESDATA/test_motion_correction';
-acquisition_dir = '/nas/volume1/2photon/RESDATA/test_motion_correction_3D';
+acquisition_dir = '/nas/volume1/2photon/RESDATA/test_motion_correction_3D/DATA';
 
 %if run_multi_acquisitions == 1
 % acquisition_dirs = dir(acquisition_dir);
@@ -117,6 +117,8 @@ acquisition_dir = '/nas/volume1/2photon/RESDATA/test_motion_correction_3D';
 
 %tiffs(ismember(tiffs,{'.','..'})) = [];
 mc_ref_channel = 2; %1; %2;
+mc_ref_movie = 2;
+
 %fprintf('Correcting %i movies: \n', length(tiffs));
 %display(tiffs);
 
@@ -154,7 +156,7 @@ fprintf('Processing acquisition %s...\n', acquisition_dir);
 if crossref
     myObj = Acquisition2P([],{@SC2Pinit_noUI_crossref,[],acquisition_dir,crossref});
     myObj.motionRefChannel = mc_ref_channel; %2;
-    myObj.motionRefMovNum = 3;
+    myObj.motionRefMovNum = mc_ref_movie;
     myObj.motionCorrectCrossref;
     %end
     myObj.save;
@@ -162,7 +164,7 @@ elseif processed
     myObj = Acquisition2P([],{@SC2Pinit_noUI,[],acquisition_dir});
     myObj.motionCorrectionFunction = @lucasKanade_plus_nonrigid;
     myObj.motionRefChannel = mc_ref_channel; %2;
-    myObj.motionRefMovNum = 3;
+    myObj.motionRefMovNum = mc_ref_movie;
     myObj.motionCorrectProcessed;
     %end
     myObj.save;
@@ -170,7 +172,7 @@ else
     myObj = Acquisition2P([],{@SC2Pinit_noUI,[],acquisition_dir});
     myObj.motionCorrectionFunction = @lucasKanade_plus_nonrigid;
     myObj.motionRefChannel = mc_ref_channel; %2;
-    myObj.motionRefMovNum = 1;
+    myObj.motionRefMovNum = mc_ref_movie;
     myObj.motionCorrect;
     %end
     myObj.save;
