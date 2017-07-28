@@ -112,20 +112,37 @@ for movNum = movieOrder
    nDiscardTmp = scanImageMetadata.SI.hFastZ.numDiscardFlybackFrames;
    nVolumesTmp = scanImageMetadata.SI.hFastZ.numVolumes;
    nChannelsTmp = numel(scanImageMetadata.SI.hChannels.channelSave);
-   expectedSlices = (size(mov, 3) / nChannelsTmp) / nVolumesTmp;
-    if expectedSlices ~= (nSlicesTmp - nDiscardTmp)
-        nDiscardTmp = nSlicesTmp - expectedSlices;
-        falseDiscard = true
+   desiredSlices = (size(mov, 3) / nChannelsTmp) / nVolumesTmp
+   if desiredSlices ~= nSlicesTmp  % input (processed) tiff does not have discard removed, or has extra flyback frames removed.
+	if nDiscardTmp == 0
+	    % This means discard frames were not specified and acquired, and flyback frames removed from top in processed tiff.
+	    extra_flyback_top = true;
+            nDiscardTmp = nSlicesTmp - desiredSlices;
+	    false_discard = true;
+        elseif nDiscardTmp > 0
+	    % Discard frames were specified/acquired but extra flyback frames removed from top of stack
+	    extra_flyback_top = true;   
+	    false_discard = false;
+	end
     else
-        falseDiscard = false
+	extra_flyback_top = false;
+	false_discard = false;
     end
-    nSlicesSelected = nSlicesTmp - nDiscardTmp;
+	
+%     if expectedSlices ~= (nSlicesTmp - nDiscardTmp)
+%         nDiscardTmp = nSlicesTmp - expectedSlices;
+%         falseDiscard = true
+%     else
+%         falseDiscard = false
+%     end
+   nSlicesSelected = nSlicesTmp - nDiscardTmp;
 
    scanImageMetadata.SI.hStackManager.numSlices = nSlicesSelected;
    scanImageMetadata.SI.hFastZ.numDiscardFlybackFrames = 0;
    scanImageMetadata.SI.hFastZ.numFramesPerVolume = scanImageMetadata.SI.hStackManager.numSlices;
-
-   nFramesSelected = nChannelsTmp*nSlicesSelected*nVolumesTmp;
+   scanImageMetadata.SI.hStackManager.zs = scanImageMetadata.SI.hStackManager.zs(nDiscardTmp+1:end);
+   scanImageMetadata.SI.hFastZ.discardFlybackFrames = 0;  % Need to disflag this so that parseScanimageTiff (from Acquisition2P) takes correct n slices
+   nFramesSelected = nChannelsTmp*nSlicesSelected*nVolumesTmp
 
    metanames = fieldnames(scanImageMetadata);
    for field=1:length(metanames)
@@ -133,13 +150,17 @@ for movNum = movieOrder
            continue;
        else
            currfield = scanImageMetadata.(metanames{field});
-            if falseDiscard
-                % there are no additional empty flybacks at the end of volume, so just skip every nSlicesTmp
+            if extra_flyback_top && false_discard %falseDiscard
+                % there are no additional empty flybacks at the end of volume, so just skip every nSlicesTmp, starting from corrected num nDiscard removed from top:
                 startidxs = colon(nDiscardTmp*nChannelsTmp+1, nChannelsTmp*(nSlicesTmp), length(currfield)); 
                 fprintf('N volumes based on start indices: %i\n', length(startidxs));
-            else
+            elseif extra_flyback_top && ~false_discard
+		% There were specified num of empty flybacks at end of volume, so remove those indices, if necessary, while also removing the removed frames at top:
                 startidxs = colon(nDiscardTmp*nChannelsTmp+1, nChannelsTmp*(nSlicesTmp+nDiscardTmp), length(currfield));
-            end
+            else
+		% There were empty flyybacks at end of volume, but correctly executed, s.t. no additional flybacks removed from top:
+		startidxs = colon(1:nChannelsTmp*(nSlicesTmp+nDiscardTmp), length(currfield)); 
+	    end
            if iscell(currfield)
                tmpfield = cell(1, nFramesSelected);
            else
@@ -147,6 +168,7 @@ for movNum = movieOrder
            end
            newidx = 1;
            for startidx = startidxs
+	       % Only grab info for those frames that are kept in processed tiff (i.e., remove indices related to any "top" flyback and any "true" discard frames:
                tmpfield(newidx:newidx+(nSlicesSelected*nChannelsTmp - 1)) = currfield(startidx:startidx+(nSlicesSelected*nChannelsTmp - 1));
                newidx = newidx + (nSlicesSelected*nChannelsTmp);
            end
@@ -159,8 +181,10 @@ for movNum = movieOrder
     % Apply line shift:
     fprintf('Line Shift Correcting Movie #%03.0f of #%03.0f\n', movNum, nMovies),
     mov = correctLineShift(mov);
+    fprintf('Finished Line-Shift correction. Movie size is: %s', mat2str(size(mov)));
     try
         [movStruct, nSlices, nChannels] = parseScanimageTiff(mov, scanImageMetadata);
+	fprintf('Parsed SI tiff. nSlices: %s', num2str(nSlices));
     catch
         error('parseScanimageTiff failed to parse metadata'),
     end
@@ -227,7 +251,7 @@ end
 
 %info = load(fullfile(obj.defaultDir, 'Corrected', strcat(obj.acqName, '.mat')))
 
-interleaveTiffs(obj, true); %, info);
+interleaveTiffs(obj, false); %, info);
 
 end
 
