@@ -24,14 +24,14 @@ function interleaveTiffs(obj, split_channels)
             newtiff(:,:,(sliceidxs(slice)+1):(nslices*2):end) = tmp;
         end
         [fpath, fname, fext] = fileparts(obj.correctedMovies.slice(slice).channel(1).fileName{file});
-         filename = strsplit(fname, '_');
+        filename_parts = strsplit(fname, '_');
 	if split_channels
 	    for cidx=1:2
-	        newtiffname = strcat(filename{end}, sprintf('_Channel%02d', cidx), fext)
+	       newtiffname = strcat(strjoin(filename_parts(1:end-3), '_'), sprintf('_File%03d', file), sprintf('_Channel%02d', cidx), fext)
 	       tiffWrite(newtiff(:,:,cidx:2:end), newtiffname, obj.defaultDir);
 	    end 
 	else
-            newtiffname = strcat(filename{end}, fext)
+            newtiffname = strcat(strjoin(filename_parts(1:end-3), '_'), sprintf('_File%03d', file), fext)
             tiffWrite(newtiff, newtiffname, obj.defaultDir); %, 'int16');
 	end
     end 
