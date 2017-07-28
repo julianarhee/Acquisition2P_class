@@ -11,8 +11,9 @@ movNames = {movList(:).name}'
 
 checkstring = movNames{1};
 if ~isempty(checkstring(1)) && all(ismember(checkstring(1), '0123456789'))
+    % Can't have #s in var name, so append file_ to start of acqname...
     for mov=1:length(movNames)
-        movefile(fullfile(movPath, movNames{mov}), fullfile(movPath, sprintf('file_%s', movNames{mov})));
+        movefile(fullfile(movPath, movNames{mov}), fullfile(movPath, sprintf('mov_%s', movNames{mov})));
     end
     movList = dir(fullfile(movPath, '*.tif'));
     movNames = {movList(:).name}'
