@@ -12,23 +12,24 @@ function interleaveTiffs(obj, split_channels)
     movsize = obj.correctedMovies.slice(1).channel(1).size(1,:);
     nframes = nslices*movsize(3)*nchannels;
 
-    sliceidxs = 1:2:nslices*nchannels;
+    sliceidxs = 1:nchannels:nslices*nchannels;
     for file=1:nfiles
         newtiff = zeros(movsize(1), movsize(2), nframes);
         for slice = 1:nslices
+	    % This currently assumes only 2 channels...
             currtiff = obj.correctedMovies.slice(slice).channel(1).fileName{file};
             [tmp,~] = tiffRead(currtiff);
-            newtiff(:,:,sliceidxs(slice):(nslices*2):end) = tmp;
+            newtiff(:,:,sliceidxs(slice):(nslices*nchannels):end) = tmp;
             currtiff = obj.correctedMovies.slice(slice).channel(2).fileName{file};
             [tmp,~] = tiffRead(currtiff); 
-            newtiff(:,:,(sliceidxs(slice)+1):(nslices*2):end) = tmp;
+            newtiff(:,:,(sliceidxs(slice)+1):(nslices*nchannels):end) = tmp;
         end
         [fpath, fname, fext] = fileparts(obj.correctedMovies.slice(slice).channel(1).fileName{file});
         filename_parts = strsplit(fname, '_');
 	if split_channels
-	    for cidx=1:2
+	    for cidx=1:nchannels
 	       newtiffname = strcat(strjoin(filename_parts(1:end-3), '_'), sprintf('_File%03d', file), sprintf('_Channel%02d', cidx), fext)
-	       tiffWrite(newtiff(:,:,cidx:2:end), newtiffname, obj.defaultDir);
+	       tiffWrite(newtiff(:,:,cidx:nchannels:end), newtiffname, obj.defaultDir);
 	    end 
 	else
             newtiffname = strcat(strjoin(filename_parts(1:end-3), '_'), sprintf('_File%03d', file), fext)

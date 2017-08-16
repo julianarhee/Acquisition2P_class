@@ -105,7 +105,9 @@ processed = true; %false % true
 %acquisition_dir = '/nas/volume1/2photon/RESDATA/20161222_JR030W/gratings2/DATA';
 %acquisition_dir = '/nas/volume1/2photon/RESDATA/test_motion_correction';
 %acquisition_dir = '/nas/volume1/2photon/RESDATA/test_motion_correction_3D/DATA';
-acquisition_dir = '/nas/volume1/2photon/RESDATA/20170724_CE051/retinotopy1/DATA';
+%acquisition_dir = '/nas/volume1/2photon/RESDATA/20170724_CE051/retinotopy1/DATA';
+acquisition_dir = '/nas/volume1/2photon/RESDATA/20170811_CE052/retinotopy1/DATA';
+
 
 %if run_multi_acquisitions == 1
 % acquisition_dirs = dir(acquisition_dir);
@@ -117,8 +119,8 @@ acquisition_dir = '/nas/volume1/2photon/RESDATA/20170724_CE051/retinotopy1/DATA'
 %end
 
 %tiffs(ismember(tiffs,{'.','..'})) = [];
-mc_ref_channel = 2; %1; %2;
-mc_ref_movie = 1; %2;
+mc_ref_channel = 1; %1; %2;
+mc_ref_movie = 1; %1; %2;
 
 %fprintf('Correcting %i movies: \n', length(tiffs));
 %display(tiffs);
@@ -163,7 +165,7 @@ if crossref
     myObj.save;
 elseif processed
     myObj = Acquisition2P([],{@SC2Pinit_noUI,[],acquisition_dir});
-    myObj.motionCorrectionFunction = @lucasKanade_plus_nonrigid;
+    myObj.motionCorrectionFunction = @lucasKanade_plus_nonrigid; %withinFile_withinFrame_lucasKanade; %@lucasKanade_plus_nonrigid;
     myObj.motionRefChannel = mc_ref_channel; %2;
     myObj.motionRefMovNum = mc_ref_movie;
     myObj.motionCorrectProcessed;
@@ -178,6 +180,11 @@ else
     %end
     myObj.save;
 end
+
+% Re-interleave TIFF slices:
+split_channels = false;
+interleaveTiffs(myObj, split_channels); %, info);
+
     
 % ---------------------------------------------------------------------
 % If using (and including) 2 channels for MC, separate them into their
