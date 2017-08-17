@@ -1,89 +1,5 @@
 %% Using the Acuisition2P class:
 %
-%% -----Setup-------
-% All software in the acq2P package has been extensively tested on Matlab
-% 2014b. Using earlier versions may cause bugs and will certainly degrade
-% appearance.
-
-% You will need a number of functions from the harveylab helper functions
-% repository, so I suggest you add the full repository to your path.
-
-% In addition to these functions, you need to add certain folders from
-% within the 'Acquisition2P_class' repository to your path. Specifically,
-% the classes folder (without the @ subdirectories) and the common folder
-% (with all subdirectories). You may choose to add folders from
-% 'personal' as appropriate, and place custom initialization / scripts
-% there.
-
-%% Overview
-% In a typical imaging experiment, we image activity at one field-of-view for some 
-% duration. This FOV may be subdivided into multiple axial slices, each of which 
-% consist of an arbitrary number of channels, and the data corresponding to the entire 
-% 'acquisition' is a list of TIFF files named according to the user's convention, which 
-% may or may not have been acquired with pauses between certain movies. If we later 
-% move the sample or microscope to a new position, in this terminology we start a 
-% new 'acquisition'.
-% 
-% For data capture within one acquisition, we almost always want to motion correct 
-% all frames for each slice with respect to each other, select appropriate ROIs, and 
-% extract corresponding fluorescence traces. The Acquisition2P class is designed 
-% to completely manage this pipeline from raw acquisitions to traces, and nothing 
-% more (i.e. no thresholding, analysis...).
-% 
-% The general idea is that the processing pipeline is hard-coded into the class 
-% properties/methods, but particulars (e.g. naming formats, initializations, the specific algorithm for 
-% motion correction used) are flexible and user-modifiable outside the class structure.  
-% Hopefully this allows easy sharing of code and data and provides a standard for 
-% long-term storage of metadata, without being overly fascistic about particular details 
-% of how a user names, organizes, or processes their data.
-% 
-% The code below is a simple step-by-step script illustrating how you can use the class 
-% on a group of raw files stored on a local hard drive. Moving Acquisition2P objects, 
-% from a rig to a server or a server to an analysis computer is straightforward, but 
-% involves functions not mentioned in this overview script. Look at the method newDir, and an 
-% example of the function 'acq2server' (in selmaan's personal folder) using this method, 
-% if you want to see an eample of my typical workflow, or use newDir and matlab's copyfile
-% function to build your own. Alternately the acq2pJobProcessor is a class
-% designed to handle automated processing of acq2p objects, very useful if
-% you have masses of data to deal with. It has a readme file documenting
-% usage in the @acq2pJobProcessor.
-
-%% Initialize an Acquisition2P object
-
-% Acquisitions can be constructed a number of ways, fully documented in the
-% .m file. The most typical way is to pass a handle to an initialization
-% function. Here, I use the SC2Pinit initialization function, which is provided 
-% as an example for what initialization is supposed to do. Once you
-% understand how it works, you can design your own initialization function
-% to match whatever naming/organizing convention you already use.
-
-% The function is commented in detail, but basically it allows graphical 
-% user selection of a group of files, uses the filenames to name a new
-% acquisition2P object, adds the selected files to the object as raw data,
-% and fills in properties of the object necessary for motion correction
-% (e.g. the function/algorithm to use, the channel to use as reference for 
-% motion correction). If this succeeds, it assigns the object to a variable in the base 
-% workspace with the name created by the automatic procedure. The function also
-% outputs the object if you prefer that syntax, but having the
-% initialization automatically assign the variable ensures that the
-% object's internal name matches its matlab variable name. 
-
-
-%myObj = Acquisition2P([],@SC2Pinit);
-
-%myObj.motionRefChannel = 2;
-%myObj.motionRefMovNum = 1; %10;
-
-%myObj.motionCorrect;
-
-% The Acquisition2P constructer has a series of error checks to ensure that
-% necessary properties are not left blank by accident. Practically, this
-% means that with whatever custom initialization function you use, the code
-% will automatically check to see if fields are provided. If they are not,
-% it will issue a warning, and either fill in the field with a default
-% value or alert the user to manually fill the field. (For hardcore users,
-% you can bypass these error checks using a different constructer syntax)
-
 %% Run MC for multiple acquisitiosn without UI:
 clear all;
 clc;
@@ -97,8 +13,7 @@ gcp;
 run_multi_acquisitions=0;
 
 crossref = false %true;
-processed = false; %true; %false % true
-
+processed = false; %true; %false % truea
 
 %acquisition_dir = '/nas/volume1/2photon/RESDATA/20161222_JR030W/gratings1';
 %acquisition_dir = '/nas/volume1/2photon/RESDATA/20161221_JR030W/test_crossref';
@@ -107,6 +22,9 @@ processed = false; %true; %false % true
 %acquisition_dir = '/nas/volume1/2photon/RESDATA/test_motion_correction_3D/DATA';
 %acquisition_dir = '/nas/volume1/2photon/RESDATA/20170724_CE051/retinotopy1/DATA';
 acquisition_dir = '/nas/volume1/2photon/RESDATA/20170811_CE052/retinotopy5';
+mc_ref_channel = 1; %1; %2;
+mc_ref_movie = 1; %1; %2;
+
 
 
 %if run_multi_acquisitions == 1
@@ -119,8 +37,6 @@ acquisition_dir = '/nas/volume1/2photon/RESDATA/20170811_CE052/retinotopy5';
 %end
 
 %tiffs(ismember(tiffs,{'.','..'})) = [];
-mc_ref_channel = 1; %1; %2;
-mc_ref_movie = 1; %1; %2;
 
 %fprintf('Correcting %i movies: \n', length(tiffs));
 %display(tiffs);
