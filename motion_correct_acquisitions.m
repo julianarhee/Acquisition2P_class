@@ -97,7 +97,7 @@ gcp;
 run_multi_acquisitions=0;
 
 crossref = false %true;
-processed = true; %false % true
+processed = false; %true; %false % true
 
 
 %acquisition_dir = '/nas/volume1/2photon/RESDATA/20161222_JR030W/gratings1';
@@ -106,7 +106,7 @@ processed = true; %false % true
 %acquisition_dir = '/nas/volume1/2photon/RESDATA/test_motion_correction';
 %acquisition_dir = '/nas/volume1/2photon/RESDATA/test_motion_correction_3D/DATA';
 %acquisition_dir = '/nas/volume1/2photon/RESDATA/20170724_CE051/retinotopy1/DATA';
-acquisition_dir = '/nas/volume1/2photon/RESDATA/20170811_CE052/retinotopy1/DATA';
+acquisition_dir = '/nas/volume1/2photon/RESDATA/20170811_CE052/retinotopy5';
 
 
 %if run_multi_acquisitions == 1
