@@ -108,7 +108,7 @@ for movNum = movieOrder
     % Adjust SI meta to match true data:
    fprintf('Parsing processed SI tiff and getting adjusted meta data...\n');
    fprintf('Size of movie: %s\n', mat2str(size(mov)));
-   nSlicesTmp = scanImageMetadata.SI.hStackManager.numSlices;
+   nSlicesTmp = scanImageMetadata.SI.hStackManager.numSlices
    nDiscardTmp = scanImageMetadata.SI.hFastZ.numDiscardFlybackFrames;
    nVolumesTmp = scanImageMetadata.SI.hFastZ.numVolumes;
    nChannelsTmp = numel(scanImageMetadata.SI.hChannels.channelSave);
@@ -129,13 +129,7 @@ for movNum = movieOrder
 	extra_flyback_top = false;
 	false_discard = false;
     end
-	
-%     if expectedSlices ~= (nSlicesTmp - nDiscardTmp)
-%         nDiscardTmp = nSlicesTmp - expectedSlices;
-%         falseDiscard = true
-%     else
-%         falseDiscard = false
-%     end
+
    nSlicesSelected = desiredSlices; %nSlicesTmp - nDiscardTmp;
 
    scanImageMetadata.SI.hStackManager.numSlices = nSlicesSelected;
