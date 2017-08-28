@@ -1,30 +1,22 @@
-%% Using the Acuisition2P class:
-%
-%% Run MC for multiple acquisitiosn without UI:
-clear all;
-clc;
-addpath(genpath('~/Repositories/Acquisition2P_class'))
-addpath(genpath('~/Repositories/helperFunctions'))
-addpath(genpath('~/Repositories/12k2p-software'))
-addpath(genpath('~/Repositories/2p-tester-scripts'))
-
 gcp;
 
-run_multi_acquisitions=0;
-
-crossref = false %true;
-processed = false; %true; %false % truea
-
-%acquisition_dir = '/nas/volume1/2photon/RESDATA/20161222_JR030W/gratings1';
-%acquisition_dir = '/nas/volume1/2photon/RESDATA/20161221_JR030W/test_crossref';
-%acquisition_dir = '/nas/volume1/2photon/RESDATA/20161222_JR030W/gratings2/DATA';
-%acquisition_dir = '/nas/volume1/2photon/RESDATA/test_motion_correction';
-%acquisition_dir = '/nas/volume1/2photon/RESDATA/test_motion_correction_3D/DATA';
-%acquisition_dir = '/nas/volume1/2photon/RESDATA/20170724_CE051/retinotopy1/DATA';
-acquisition_dir = '/nas/volume1/2photon/RESDATA/20170811_CE052/retinotopy5';
-mc_ref_channel = 1; %1; %2;
-mc_ref_movie = 1; %1; %2;
-
+% run_multi_acquisitions=0;
+% 
+% crossref = false %true;
+% processed = true; %true; %false % truea
+% 
+% %acquisition_dir = '/nas/volume1/2photon/RESDATA/20161222_JR030W/gratings1';
+% %acquisition_dir = '/nas/volume1/2photon/RESDATA/20161221_JR030W/test_crossref';
+% %acquisition_dir = '/nas/volume1/2photon/RESDATA/20161222_JR030W/gratings2/DATA';
+% %acquisition_dir = '/nas/volume1/2photon/RESDATA/test_motion_correction';
+% %acquisition_dir = '/nas/volume1/2photon/RESDATA/test_motion_correction_3D/DATA';
+% %acquisition_dir = '/nas/volume1/2photon/RESDATA/20170724_CE051/retinotopy1/DATA';
+% %acquisition_dir = '/nas/volume1/2photon/RESDATA/20170811_CE052/retinotopy5';
+% acquisition_dir = '/nas/volume1/2photon/RESDATA/20170825_CE055/fxnal_data/gratings1';
+% 
+% mc_ref_channel = 1; %1; %2;
+% mc_ref_movie = 1; %1; %2;
+% 
 
 
 %if run_multi_acquisitions == 1
