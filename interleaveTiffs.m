@@ -5,7 +5,7 @@ function interleaveTiffs(obj, split_channels)
     if split_channels
 	fprintf('Splitting channels bec big TIFF.\n');
     end
-    nslices = length(obj.correctedMovies.slice);
+    nslices = length(obj.correctedMovies.slice)
     nchannels = length(obj.correctedMovies.slice(1).channel);
     nfiles = length(obj.correctedMovies.slice(1).channel(1).fileName);
 
