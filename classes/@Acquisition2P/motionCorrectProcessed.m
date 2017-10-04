@@ -67,6 +67,18 @@ end
 movieOrder = 1:nMovies;
 movieOrder([1 obj.motionRefMovNum]) = [obj.motionRefMovNum 1];
 
+
+% meta source info comes from original tiffs:
+%[parentDir, dataFolder, ~] = fileparts(obj.defaultDir);
+pts = strsplit(obj.defaultDir, '/DATA');
+parentDir = pts{1};
+%origMovies = dir(fullfile(parentDir,'*.tif'));
+%origMovies = {origMovies(:).name};
+
+[acq_dir, func_folder, ~] = fileparts(parentDir);
+fprintf('ACQ dir: %s\n', acq_dir);
+simeta = load(fullfile(acq_dir, sprintf('SI_raw_%s.mat', func_folder))) 
+
 %Load movies one at a time in order, apply correction, and save as
 %split files (slice and channel)
 for movNum = movieOrder
@@ -74,17 +86,18 @@ for movNum = movieOrder
     %[mov, scanImageMetadata] = obj.readRaw(movNum,'single');
     %[mov, scanImageMetadata] = obj.readRaw(movNum,'double');
     
-    
-    % meta source info comes from original tiffs:
-    %[parentDir, dataFolder, ~] = fileparts(obj.defaultDir);
-    pts = strsplit(obj.defaultDir, '/DATA');
-    parentDir = pts{1};
-    origMovies = dir(fullfile(parentDir,'*.tif'));
-    origMovies = {origMovies(:).name};
-    [~, scanImageMetadata] = tiffReadMeta(fullfile(parentDir, origMovies{movNum}));
+   
+    % Don't read orig, too huge:
+    currfile = sprintf('File%03d', movNum) 
+    scanImageMetadata = simeta.(currfile);
+    fieldnames(scanImageMetadata)
+
+    %[~, scanImageMetadata] = tiffReadMeta(fullfile(parentDir, origMovies{movNum}));
     % but movie file comes from processed tiff:
     %[mov, ~] = tiffRead(fullfile(obj.defaultDir, obj.Movies{movNum}));
-    [mov, ~] = tiffRead(obj.Movies{movNum});
+    fprintf('Curr movie is: %s\n', obj.Movies{movNum});
+    %[mov, ~] = tiffRead(obj.Movies{movNum});
+    mov = read_file(obj.Movies{movNum});
 
     fprintf('Mov size is: %s\n.', mat2str(size(mov)));
     fprintf('Mov type is: %s\n.', class(mov));
