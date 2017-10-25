@@ -122,7 +122,7 @@ for movNum = movieOrder
     end
 
     % Adjust SI meta to match true data:
-    scanImageMetadata = adjust_si_metadata(scanImageMetadata, mov);
+    scanImageMetadata = adjust_si_metadata(scanImageMetadata, size(mov));
 %    fprintf('Parsing processed SI tiff and getting adjusted meta data...\n');
 %    fprintf('Size of movie: %s\n', mat2str(size(mov)));
 %    nSlicesTmp = scanImageMetadata.SI.hStackManager.numSlices
