@@ -242,23 +242,25 @@ end
 %Assign acquisition to a variable with its own name, and write to same
 %directory
 eval([obj.acqName ' = obj;']),
-save(fullfile(obj.defaultDir, obj.acqName), obj.acqName)
+%save(fullfile(obj.defaultDir, obj.acqName), obj.acqName)
 % Rename Acq2P object because want to create SI meta struct for processed TIFFs:
-newObjName = sprintf('Acq_%s.mat', obj.acqName);
-movefile(fullfile(obj.defaultDir, [obj.acqName '.mat']), fullfile(obj.defaultDir, newObjName));
-fprintf('Renamed file to: %s\n', newObjName);
+newObjName = sprintf('Acq2P2P_%s.mat', obj.acqName);
+save(fullfile(obj.defaultDir, newObjName), obj.acqName)
+
+%movefile(fullfile(obj.defaultDir, [obj.acqName '.mat']), fullfile(obj.defaultDir, newObjName));
+fprintf('Renamed Acq2P obj file to: %s\n', newObjName);
 display('Motion Correction Completed!')
 
 
-if ~exist(fullfile(obj.defaultDir, 'Raw'), 'dir')
-    mkdir(fullfile(obj.defaultDir, 'Raw'));
-end
-
-for movidx=1:length(obj.Movies)
-    [datadir, fname, ext] = fileparts(obj.Movies{movidx});
-    movefile(obj.Movies{movidx}, fullfile(obj.defaultDir, 'Raw', strcat(fname, ext)));
-end
-
+% if ~exist(fullfile(obj.defaultDir, 'Raw'), 'dir')
+%     mkdir(fullfile(obj.defaultDir, 'Raw'));
+% end
+% 
+% for movidx=1:length(obj.Movies)
+%     [datadir, fname, ext] = fileparts(obj.Movies{movidx});
+%     movefile(obj.Movies{movidx}, fullfile(obj.defaultDir, 'Raw', strcat(fname, ext)));
+% end
+% 
 %movefile(fullfile(obj.defaultDir, strcat(obj.acqName, '.mat')), fullfile(obj.defaultDir, 'Corrected', strcat(obj.acqName, '.mat')));
 
 %info = load(fullfile(obj.defaultDir, 'Corrected', strcat(obj.acqName, '.mat')))
