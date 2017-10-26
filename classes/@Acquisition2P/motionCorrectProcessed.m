@@ -96,8 +96,8 @@ for movNum = movieOrder
     % but movie file comes from processed tiff:
     fprintf('Curr movie is: %s\n', obj.Movies{movNum});
     if strfind(scanImageMetadata.SI.VERSION_MAJOR, '2016')
-        %[mov, ~] = tiffRead(obj.Movies{movNum});
-        mov = read_file(obj.Movies{movNum});
+        [mov, ~] = tiffRead(obj.Movies{movNum});
+        %mov = read_file(obj.Movies{movNum});
     else
         mov = read_imgdata(obj.Movies{movNum});
     end
