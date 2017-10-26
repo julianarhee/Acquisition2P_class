@@ -173,7 +173,7 @@ eval([obj.acqName ' = obj;']),
 
 % Rename Acq2P object because want to create SI meta struct for processed TIFFs:
 %newobjname = sprintf('Acq2p_%s.mat', obj.acqname);
-[parentdir, outputfolder, ~] = fileparts(obj.writeDir);
+[parentdir, outputfolder, ~] = fileparts(writeDir);
 newobjname = sprintf('%s.mat', outputfolder);
 save(fullfile(obj.defaultDir, newObjName), obj.acqName)
 
