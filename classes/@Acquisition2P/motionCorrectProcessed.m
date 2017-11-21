@@ -169,7 +169,7 @@ for movNum = movieOrder
 end
 
 %Assign acquisition to a variable with its own name, and write to same directory
-eval([obj.acqName ' = obj;']),
+eval([obj.acqName ' = obj']),
 
 % Rename Acq2P object because want to create SI meta struct for processed TIFFs:
 %newobjname = sprintf('Acq2p_%s.mat', obj.acqname);
