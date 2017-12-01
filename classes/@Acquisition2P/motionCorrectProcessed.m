@@ -126,8 +126,8 @@ for movNum = movieOrder
     mov = correctLineShift(mov);
     fprintf('Finished Line-Shift correction. Movie size is: %s\n', mat2str(size(mov)));
     try
-        [movStruct, nSlices, nChannels] = parseScanimageTiff(mov, scanImageMetadata);
-	fprintf('Parsed SI tiff. nSlices: %s', num2str(nSlices));
+        [movStruct, nSlices, nChannels] = parseScanimageTiff(mov, scanImageMetadata.SI);
+	    fprintf('Parsed SI tiff. nSlices: %s\n', num2str(nSlices));
     catch
         error('parseScanimageTiff failed to parse metadata'),
     end

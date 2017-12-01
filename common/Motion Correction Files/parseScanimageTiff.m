@@ -3,11 +3,13 @@ function [movStruct, nSlices, nChannels] = parseScanimageTiff(mov, siStruct)
 % Check for scanimage version before extracting metainformation
 if isfield(siStruct, 'VERSION_MAJOR') && ...
         (strcmp(siStruct.VERSION_MAJOR, '2016') || strcmp(siStruct.VERSION_MAJOR, '2016b'))
+    fprintf('Using SI 2016.\n')
     % SI2016 tiff that was loaded using the new SI tiff reader:
-    fZ              = siStruct.hFastZ.enable;
+    fZ              = siStruct.hFastZ.enable
     nChannels       = numel(siStruct.hChannels.channelSave);
     if fZ
         nSlices     = siStruct.hFastZ.numFramesPerVolume; % Slices are acquired at different locations (e.g. depths).
+
         siStruct.fastZDiscardFlybackFrames = siStruct.hFastZ.numDiscardFlybackFrames;
     else
         nSlices     = 1;
