@@ -73,9 +73,21 @@ movieOrder([1 obj.motionRefMovNum]) = [obj.motionRefMovNum 1];
 [rawsource, tiffname, ~] = fileparts(obj.Movies{1});
 [sourceparent, sourcefolder, ~]  = fileparts(rawsource);
 if ~any(strfind('raw', sourcefolder))
+    % Parent dir of tiffs is not a 'raw' source:
     simeta_source = dir(fullfile(obj.defaultDir, 'raw*'));
+    if length(simeta_source)==0
+        % Parent dir of tiffs is inside of current PID dir:
+        % BUT, no 'raw_<id>' dir found, so use RAW src from current run:
+        [processdir, processfolder, ~] = fileparts(obj.defaultDir);
+        [rundir, processfolder, ~] = fileparts(processdir);
+        simeta_source = dir(fullfile(rundir, 'raw*'));
+        fprintf('Extracting from RAW simeta: %s\n', simeta_source(1).name);
+    else
+        fprintf('Extracting from PROCESSED raw simeta: %s\n', simeta_source(1).name);
+    end
     simeta_source = fullfile(obj.defaultDir, simeta_source(1).name)
 else
+    % Parent dir of tiffs is a 'raw' source:
     simeta_source = rawsource;
 end
 simeta_fn = dir(fullfile(simeta_source, '*.json'));
