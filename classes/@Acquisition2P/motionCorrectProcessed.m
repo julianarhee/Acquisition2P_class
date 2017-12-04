@@ -71,9 +71,16 @@ movieOrder([1 obj.motionRefMovNum]) = [obj.motionRefMovNum 1];
 % Use METADATA extracted from preprocessing step:
 
 [rawsource, tiffname, ~] = fileparts(obj.Movies{1});
-simeta_fn = dir(fullfile(rawsource, '*.json'));
-fprintf('Getting meta from %s: %s\n', rawsource, simeta_fn.name);
-simeta = loadjson(fullfile(rawsource, simeta_fn.name));
+[sourceparent, sourcefolder, ~]  = fileparts(rawsource);
+if ~any(strfind('raw', sourcefolder))
+    simeta_source = dir(fullfile(obj.defaultDir, 'raw*'));
+    simeta_source = fullfile(obj.defaultDir, simeta_source(1).name)
+else
+    simeta_source = rawsource;
+end
+simeta_fn = dir(fullfile(simeta_source, '*.json'));
+fprintf('Getting meta from %s: %s\n', simeta_source, simeta_fn.name);
+simeta = loadjson(fullfile(simeta_source, simeta_fn.name));
 %simeta = load(fullfile(acq_dir, sprintf('SI_raw_%s.mat', func_folder))) 
 
 %Load movies one at a time in order, apply correction, and save as
