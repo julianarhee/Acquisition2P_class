@@ -81,11 +81,12 @@ if ~any(strfind('raw', sourcefolder))
         [processdir, processfolder, ~] = fileparts(obj.defaultDir);
         [rundir, processfolder, ~] = fileparts(processdir);
         simeta_source = dir(fullfile(rundir, 'raw*'));
-        fprintf('Extracting from RAW simeta: %s\n', simeta_source(1).name);
+        simeta_source = fullfile(rundir, simeta_source(1).name);
+        fprintf('Extracting from RAW simeta: %s\n', simeta_source);
     else
         fprintf('Extracting from PROCESSED raw simeta: %s\n', simeta_source(1).name);
+        simeta_source = fullfile(obj.defaultDir, simeta_source(1).name);
     end
-    simeta_source = fullfile(obj.defaultDir, simeta_source(1).name)
 else
     % Parent dir of tiffs is a 'raw' source:
     simeta_source = rawsource;
