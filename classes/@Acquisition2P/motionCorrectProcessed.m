@@ -71,7 +71,8 @@ movieOrder([1 obj.motionRefMovNum]) = [obj.motionRefMovNum 1];
 % Use METADATA extracted from preprocessing step:
 abort = false;
 [tiffsrc, tiffname, ~] = fileparts(obj.Movies{1});
-if ~any(strfind('raw', tiffsrc)) % Tiffs are not themselves a 'raw' source
+fprintf('tiffsrc: %s\n', tiffsrc);
+if ~any(strfind(tiffsrc, 'raw')) % Tiffs are not themselves a 'raw' source
     try
         [srcparent, tiffsrc, ~]  = fileparts(tiffsrc);
         [processed_dir, process_name, ~] = fileparts(srcparent);
@@ -84,7 +85,7 @@ if ~any(strfind('raw', tiffsrc)) % Tiffs are not themselves a 'raw' source
         simeta_source = fullfile(rawsrc, simeta_source(1).name); %orig_tiff_source;
         fprintf('Loading SIMETA info from PROCESSED src: %s\n', simeta_source);
     catch
-        fprintf('Cannot find RAW SOURCE for SIMETA data to process tiffs in dir:\n%s\n', tiffsrc);
+        fprintf('Cannot find RAW SOURCE for SIMETA data to process tiffs in dir:\n%s\n', rawsrc);
         fprintf('ABORTING MOTION CORRECTION STEP.');
         abort = true;
     end
