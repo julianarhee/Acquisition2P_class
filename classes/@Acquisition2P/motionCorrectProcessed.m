@@ -69,27 +69,42 @@ movieOrder([1 obj.motionRefMovNum]) = [obj.motionRefMovNum 1];
 
 
 % Use METADATA extracted from preprocessing step:
-
-[rawsource, tiffname, ~] = fileparts(obj.Movies{1});
-[sourceparent, sourcefolder, ~]  = fileparts(rawsource);
-if ~any(strfind('raw', sourcefolder))
-    % Parent dir of tiffs is not a 'raw' source:
-    simeta_source = dir(fullfile(obj.defaultDir, 'raw*'));
-    if length(simeta_source)==0
-        % Parent dir of tiffs is inside of current PID dir:
-        % BUT, no 'raw_<id>' dir found, so use RAW src from current run:
-        [processdir, processfolder, ~] = fileparts(obj.defaultDir);
-        [rundir, processfolder, ~] = fileparts(processdir);
-        simeta_source = dir(fullfile(rundir, 'raw*'));
-        simeta_source = fullfile(rundir, simeta_source(1).name);
-        fprintf('Extracting from RAW simeta: %s\n', simeta_source);
+abort = false;
+[tiffsrc, tiffname, ~] = fileparts(obj.Movies{1});
+if ~any(strfind('raw', tiffsrc)) % Tiffs are not themselves a 'raw' source
+    [srcparent, tiffsrc, ~]  = fileparts(tiffsrc);
+    [processed_dir, process_name, ~] = fileparts(srcparent);
+    process_name_parts = strsplit(process_name, '_');
+    pinfo_fn = dir(fullfile(processed_dir, '*.json'));
+    pid_info = loadjson(fullfile(processed_dir, pinfo_fn(1).name));
+    orig_tiff_source = pid_info.(process_name_parts{1}).SRC;
+    if ~any(strfind('raw', orig_tiff_source))
+        % where is the raw source??
+        abort = true;
     else
-        fprintf('Extracting from PROCESSED raw simeta: %s\n', simeta_source(1).name);
-        simeta_source = fullfile(obj.defaultDir, simeta_source(1).name);
+        [rawsrc, rawfolder, ~] = fileparts(orig_tiff_source);
+        simeta_source = dir(fullfile(rawsrc, 'raw*')); % cuz might have hash added
+        simeta_source = fullfile(rawsrc, simeta_source(1).name); %orig_tiff_source;
+        fprintf('Loading SIMETA info from PROCESSED src: %s\n', simeta_source);
     end
+%    % Parent dir of tiffs is not a 'raw' source:
+%    simeta_source = dir(fullfile(obj.defaultDir, 'raw*'));
+%    if length(simeta_source)==0
+%        % Parent dir of tiffs is inside of current PID dir:
+%        % BUT, no 'raw_<id>' dir found, so use RAW src from current run:
+%        [processdir, processfolder, ~] = fileparts(obj.defaultDir);
+%        [rundir, processfolder, ~] = fileparts(processdir);
+%        simeta_source = dir(fullfile(rundir, 'raw*'));
+%        simeta_source = fullfile(rundir, simeta_source(1).name);
+%        fprintf('Extracting from RAW simeta: %s\n', simeta_source);
+%    else
+%        fprintf('Extracting from PROCESSED raw simeta: %s\n', simeta_source(1).name);
+%        simeta_source = fullfile(obj.defaultDir, simeta_source(1).name);
+%    end
 else
-    % Parent dir of tiffs is a 'raw' source:
-    simeta_source = rawsource;
+    % TIffs are from a 'raw' source:
+    fprintf('Loading RAW SIMETA from raw src: %s\n', tiffsrc);
+    simeta_source = tiffsrc;
 end
 simeta_fn = dir(fullfile(simeta_source, '*.json'));
 fprintf('Getting meta from %s: %s\n', simeta_source, simeta_fn.name);
