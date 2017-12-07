@@ -78,11 +78,16 @@ if ~any(strfind(tiffsrc, 'raw')) % Tiffs are not themselves a 'raw' source
         [processed_dir, process_name, ~] = fileparts(srcparent);
         process_name_parts = strsplit(process_name, '_');
         pinfo_fn = dir(fullfile(processed_dir, '*.json'));
-        pid_info = loadjson(fullfile(processed_dir, pinfo_fn(1).name));
-        orig_tiff_source = pid_info.(process_name_parts{1}).SRC;
-        [rawsrc, rawfolder, ~] = fileparts(orig_tiff_source);
-        simeta_source = dir(fullfile(rawsrc, 'raw*')); % cuz might have hash added
-        simeta_source = fullfile(rawsrc, simeta_source(1).name); %orig_tiff_source;
+        pid_info = loadjson(fullfile(processed_dir, pinfo_fn(1).name)); 
+        if ismember(process_name, fieldnames(pid_info))
+            proc_tiff_source = pid_info.(process_name).PARAMS.preprocessing.sourcedir;
+        else
+            proc_tiff_source = pid_info.(process_name_parts{1}).PARAMS.preprocessing.sourcedir;
+        end
+        fprintf('Processed tiffsrc came from: %s\n', proc_tiff_source); 
+        [rawdir, rawfolder, ~] = fileparts(proc_tiff_source);
+        simeta_source = dir(fullfile(rawdir, 'raw*')); % cuz might have hash added
+        simeta_source = fullfile(rawdir, simeta_source(1).name); %orig_tiff_source;
         fprintf('Loading SIMETA info from PROCESSED src: %s\n', simeta_source);
     catch
         fprintf('Cannot find RAW SOURCE for SIMETA data to process tiffs in dir:\n%s\n', rawsrc);
