@@ -74,23 +74,20 @@ abort = false;
 fprintf('tiffsrc: %s\n', tiffsrc);
 if ~any(strfind(tiffsrc, 'raw')) % Tiffs are not themselves a 'raw' source
     try
-        [srcparent, tiffsrc, ~]  = fileparts(tiffsrc);
-        [processed_dir, process_name, ~] = fileparts(srcparent);
+        [tiffsrc_parent, tiffsrc_type, ~]  = fileparts(tiffsrc);
+        [processed_dir, process_name, ~] = fileparts(tiffsrc_parent);
         process_name_parts = strsplit(process_name, '_');
         pinfo_fn = dir(fullfile(processed_dir, '*.json'));
         pid_info = loadjson(fullfile(processed_dir, pinfo_fn(1).name)); 
         if ismember(process_name, fieldnames(pid_info))
-            proc_tiff_source = pid_info.(process_name).PARAMS.preprocessing.sourcedir;
-            proc_hash = pid_info.(process_name).tmp_hashid
+            proc_tiff_source = pid_info.(process_name).PARAMS.preprocessing.sourcedir
+            proc_hash = pid_info.(process_name).pid_hash;
         else
-            proc_tiff_source = pid_info.(process_name_parts{1}).PARAMS.preprocessing.sourcedir;
-            proc_hash = pid_info.(process_name_parts{1}).tmp_hashid
+            proc_tiff_source = pid_info.(process_name_parts{1}).PARAMS.preprocessing.sourcedir
+            proc_hash = pid_info.(process_name_parts{1}).pid_hash;
         end
         fprintf('Processed tiffsrc came from: %s\n', proc_tiff_source); 
         [proc_dir, proc_rawfolder, ~] = fileparts(proc_tiff_source);
-        if ~any(strfind(proc_dir, proc_hash))
-            proc_dir = [proc_dir sprintf('_%s', proc_hash)];
-        end
         fprintf('Looking in processed dir %s for raw\n', proc_dir);
         simeta_source = dir(fullfile(proc_dir, 'raw*')); % cuz might have hash added
         simeta_source = fullfile(proc_dir, simeta_source(1).name); %orig_tiff_source;
