@@ -27,7 +27,8 @@ if isempty(ajp.currentAcq.shifts)
             ClusterInfo.setWallTime('36:00'); % 20 hour
             ClusterInfo.setMemUsage('4000')
             ClusterInfo.setQueueName('mpi')
-            parpool(12)
+            %parpool(12)
+	    parpool('local', str2num(getenv('SLURM_CPUS_PER_TASK')))
         end
 	
         ajp.log('Started motion correction.');
@@ -65,7 +66,9 @@ for nSlice = 1:length(ajp.currentAcq.correctedMovies.slice)
                 ClusterInfo.setWallTime('20:00');
                 ClusterInfo.setMemUsage('12000')
                 ClusterInfo.setQueueName('mpi')
-                parpool(12)
+                %parpool(12)
+		parpool('local', str2num(getenv('SLURM_CPUS_PER_TASK')))
+
             end
             
             ajp.currentAcq.extractSources(nSlice);
@@ -101,7 +104,8 @@ if isempty(dir(fullfile(ajp.currentAcq.defaultDir, '*_deconvResults.mat')))
             ClusterInfo.setWallTime('20:00');
             ClusterInfo.setMemUsage('12000')
             ClusterInfo.setQueueName('mpi')
-            parpool(12)
+            %parpool(12)
+            parpool('local', str2num(getenv('SLURM_CPUS_PER_TASK')))	
         end
         
         ajp.currentAcq.deconvNmf;
